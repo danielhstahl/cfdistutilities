@@ -60,14 +60,10 @@ namespace cfdistutilities {
     auto computeVaRDiscrete(const Number& alpha, const Number& prec, const Number& xMin, const Number& xMax, CFDiscrete&& cf){
         return computeVaRDiscrete(alpha, xMin, xMax, fangoost::halfFirstIndex(cf), prec, prec);
     }
-    /**If we already have VaR....*/
-    /*template<typename Number, typename CF, typename Index>
-    auto computeES(const Number& VaR, const Number& alpha, const Number& xMin, const Number& xMax, const Index& numU, CF&& cf){
-        return fangoost::computeExpectationPoint(VaR, xMin, xMax, numU, cf, [&](const auto& u, const auto& x, const auto& index){
-            return VkE(u, x, xMin, xMax, index);
-        })/alpha;
-    }*/
 
+    /**note that in actual implementation we probably want 
+    to return both VaR and ES from one function since they
+    both get computed in this function*/
     template<typename Number, typename CF, typename Index>
     auto computeES(const Number& alpha, const Number& prec, const Number& xMin, const Number& xMax, const Index& numU, CF&& cf){
         auto computeVaRAndES=[&](auto&& discreteCF){

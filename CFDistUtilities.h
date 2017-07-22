@@ -55,6 +55,11 @@ namespace cfdistutilities {
     auto computeVaR(const Number& alpha, const Number& prec, const Number& xMin, const Number& xMax, const Index& numU, CF&& cf){
         return computeVaRDiscrete(alpha, xMin, xMax, fangoost::halfFirstIndex(fangoost::computeDiscreteCFReal(xMin, xMax, numU, cf)), prec, prec);
     }
+
+    template<typename Number, typename CFDiscrete>
+    auto computeVaRDiscrete(const Number& alpha, const Number& prec, const Number& xMin, const Number& xMax, CFDiscrete&& cf){
+        return computeVaRDiscrete(alpha, xMin, xMax, fangoost::halfFirstIndex(cf), prec, prec);
+    }
     /**If we already have VaR....*/
     /*template<typename Number, typename CF, typename Index>
     auto computeES(const Number& VaR, const Number& alpha, const Number& xMin, const Number& xMax, const Index& numU, CF&& cf){
@@ -83,6 +88,21 @@ namespace cfdistutilities {
             fangoost::halfFirstIndex(
                 fangoost::computeDiscreteCFReal(xMin, xMax, numU, cf)
             )
+        )/alpha;
+    }
+    template<typename Number, typename CFDiscrete>
+    auto computeESDiscrete(const Number& alpha, const Number& prec, const Number& xMin, const Number& xMax, CFDiscrete&& cf){
+        return fangoost::computeConvolutionAtPoint(
+            -computeVaRDiscrete(alpha, prec,
+                xMin, xMax, 
+                cf
+            ),
+            xMin, 
+            xMax,
+            fangoost::halfFirstIndex(cf), 
+            [&](const auto& u, const auto& x, const auto& index){
+                return VkE(u, x, xMin, xMax, index);
+            }
         )/alpha;
     }
     template<typename Number, typename CF, typename Index>

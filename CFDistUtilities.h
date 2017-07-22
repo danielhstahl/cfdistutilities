@@ -85,7 +85,12 @@ namespace cfdistutilities {
             )
         )/alpha;
     }
-
+    template<typename Number, typename CF, typename Index>
+    auto computeEL(const Number& alpha, const Number& prec, const Number& xMin, const Number& xMax, const Index& numU, CF&& cf){
+        return fangoost::computeExpectationPoint(xMax, xMin, xMax, numU, cf, [&](const auto& u, const auto& x, const auto& index){
+            return VkE(u, x, xMin, xMax, index);
+        });
+    }
 
 
 }

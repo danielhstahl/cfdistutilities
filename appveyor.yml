@@ -1,0 +1,36 @@
+# Specify version format
+version: "{build}"
+
+# Operating system (build VM template)
+os: Visual Studio 2015
+# build platform, i.e. Win32 (instead of x86), x64, Any CPU. This setting is optional.
+platform: 
+  - Win32
+
+environment:
+  MSVC_DEFAULT_OPTIONS: ON
+
+# build configuration, i.e. Debug, Release, etc.
+configuration:
+  - Release
+
+
+clone_folder: C:\projects\cfdistutilities
+
+install:
+  - cmd: cd C:\projects
+  - cmd: git clone https://github.com/phillyfan1138/FunctionalUtilities
+  - cmd: git clone https://github.com/phillyfan1138/GaussNewton
+  - cmd: git clone https://github.com/phillyfan1138/FangOost
+  - cmd: git clone https://github.com/phillyfan1138/TupleUtilities
+  - cmd: git clone https://github.com/phillyfan1138/AutoDiff
+  - cmd: git clone https://github.com/phillyfan1138/cfdistutilities
+  - cmd: cd cfdistutilities
+  - cmd: make
+
+build: off
+test: off
+
+
+
+

@@ -32,13 +32,7 @@ namespace cfdistutilities {
 
     /**
         Function to compute the partial expectation of a distribution; see
-<<<<<<< HEAD
         http://danielhstahl.com/static/media/CreditRiskExtensions.c31991d2.pdf.
-=======
-        http://danielhstahl.com/static/media/CreditRiskExtensions.012b95ad.pdf.
-
-        NOTE THE TYPO in the paper...which has been fixed in https://github.com/phillyfan1138/CreditRiskExtensions/blob/master/StahlMultiVariatePaper.pdf
->>>>>>> 17be46e0fc92a7ca1acad37190165d3529e7ed4c
     */
     template<typename Number, typename Index>
     auto VkE(const Number& u, const Number& x, const Number& a, const Number& b, const Index& k){

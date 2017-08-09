@@ -14,8 +14,8 @@ namespace cfdistutilities {
         Function to compute the CDF of a distribution; see 
         http://danielhstahl.com/static/media/CreditRiskExtensions.012b95ad.pdf
     */
-    template<typename Number, typename Index>
-    auto VkCDF(const Number& u, const Number& x, const Number& a, const Number& b, const Index& k){
+    template<typename X, typename Number, typename Index>
+    auto VkCDF(const Number& u, const X& x, const Number& a, const Number& b, const Index& k){
         return k==0?x-a:sin((x-a)*u)/u;
     }
     
@@ -24,8 +24,8 @@ namespace cfdistutilities {
     auto powTwo(const Number& x){
         return x*x;
     }
-    template<typename Number>
-    auto diffPow(const Number& x, const Number& a){
+    template<typename Number, typename X>
+    auto diffPow(const X& x, const Number& a){
         return .5*(powTwo(x)-powTwo(a));
     }
 
@@ -50,10 +50,22 @@ namespace cfdistutilities {
             })-alpha;
         }, xMin, xMax, prec1, prec2);
     }
+    template<typename Number, typename CFDiscrete>
+    auto computeVaRDiscreteNewton(const Number& alpha, const Number& xMin, const Number& xMax, const Number& guess, CFDiscrete&& discreteCF, const Number& prec1){
+        return -newton::zeros([&](const auto& pointInX){
+            return fangoost::computeConvolutionAtPoint(pointInX, xMin, xMax, discreteCF, [&](const auto& u, const auto& x, const auto& index){
+                return VkCDF(u, x, xMin, xMax, index);
+            })-alpha;
+        }, guess, prec1, 500);
+    }
 
     template<typename Number, typename CF, typename Index>
     auto computeVaR(const Number& alpha, const Number& prec, const Number& xMin, const Number& xMax, const Index& numU, CF&& cf){
         return computeVaRDiscrete(alpha, xMin, xMax, fangoost::halfFirstIndex(fangoost::computeDiscreteCFReal(xMin, xMax, numU, cf)), prec, prec);
+    }
+    template<typename Number, typename CF, typename Index>
+    auto computeVaRNewton(const Number& alpha, const Number& prec, const Number& xMin, const Number& xMax, const Number& guess, const Index& numU, CF&& cf){
+        return computeVaRDiscreteNewton(alpha, xMin, xMax, guess, fangoost::halfFirstIndex(fangoost::computeDiscreteCFReal(xMin, xMax, numU, cf)), prec);
     }
 
     template<typename Number, typename CFDiscrete>

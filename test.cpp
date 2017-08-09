@@ -21,6 +21,21 @@ TEST_CASE("Test computeVaR", "[CFDistUtilities]"){
     auto myqNorm=cfdistutilities::computeVaR(alpha, prec, xMin, xMax, numU, normCF);
     REQUIRE(myqNorm==Approx(qnormReference));
 } 
+TEST_CASE("Test computeVaRNewton", "[CFDistUtilities]"){
+    const double mu=2;
+    const double sigma=5;
+    const int numU=64;
+    const double xMin=-20;
+    const double xMax=25;
+    const double alpha=.05;
+    auto normCF=[&](const auto& u){ //normal distribution's CF
+        return exp(u*mu+.5*u*u*sigma*sigma);
+    };      
+    const auto qnormReference=6.224268;
+    double prec=.0000001;
+    auto myqNorm=cfdistutilities::computeVaRNewton(alpha, prec, xMin, xMax, mu, numU, normCF);
+    REQUIRE(myqNorm==Approx(qnormReference));
+} 
 /*
 TEST_CASE("Test computeES", "[CFDistUtilities]"){
     const double mu=2;

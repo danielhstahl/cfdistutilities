@@ -66,7 +66,7 @@ namespace cfdistutilities {
     auto computeVaRNewton(const Number& alpha, const Number& prec1, const Number& prec2, const Number& xMin, const Number& xMax, const Number& guess, const Index& numU, CF&& cf){
         return computeVaRNewtonHelper(alpha, xMin, xMax, guess, fangoost::halfFirstIndex(fangoost::computeDiscreteCFReal(xMin, xMax, numU, cf)), prec1, prec2);
     }
-    template<typename Number, typename CFDiscrete, typename Index>
+    template<typename Number, typename CFDiscrete>
     auto computeVaRNewtonDiscrete(const Number& alpha, const Number& prec1, const Number& prec2, const Number& xMin, const Number& xMax, const Number& guess, CFDiscrete&& cf){
         return computeVaRNewtonHelper(alpha, xMin, xMax, guess, fangoost::halfFirstIndex(cf), prec1, prec2);
     }

@@ -104,7 +104,7 @@ namespace cfdistutilities {
     template<typename Number, typename CFDiscrete>
     auto computeESDiscrete(const Number& alpha, const Number& prec, const Number& xMin, const Number& xMax, CFDiscrete&& cf){
         return fangoost::computeConvolutionAtPoint(
-            -computeVaRHelper(alpha, prec,
+            -computeVaRDiscrete(alpha, prec,
                 xMin, xMax, 
                 cf
             ),

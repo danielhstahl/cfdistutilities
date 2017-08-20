@@ -55,7 +55,7 @@ namespace cfdistutilities {
             return fangoost::computeConvolutionAtPoint(pointInX, xMin, xMax, discreteCF, [&](const auto& u, const auto& x, const auto& index){
                 return VkCDF(u, x, xMin, xMax, index);
             })-alpha;
-        }, guess, prec1, 500);
+        }, guess, prec1, prec1, 500);
     }
 
     template<typename Number, typename CF, typename Index>

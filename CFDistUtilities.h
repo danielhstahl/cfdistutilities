@@ -42,7 +42,7 @@ namespace cfdistutilities {
     }
     //this is a helper function.  It bisects until it finds the point such that the CDF is equal to alpha 
     template<typename Number, typename CFDiscrete>
-    auto computeVaRDiscrete(const Number& alpha, const Number& xMin, const Number& xMax, CFDiscrete&& discreteCF, const Number& prec1, const Number& prec2){
+    auto computeVaRHelper(const Number& alpha, const Number& xMin, const Number& xMax, CFDiscrete&& discreteCF, const Number& prec1, const Number& prec2){
         return -newton::bisect([&](const auto& pointInX){
             return fangoost::computeConvolutionAtPoint(pointInX, xMin, xMax, discreteCF, [&](const auto& u, const auto& x, const auto& index){
                 return VkCDF(u, x, xMin, xMax, index);
@@ -50,26 +50,30 @@ namespace cfdistutilities {
         }, xMin, xMax, prec1, prec2);
     }
     template<typename Number, typename CFDiscrete>
-    auto computeVaRDiscreteNewton(const Number& alpha, const Number& xMin, const Number& xMax, const Number& guess, CFDiscrete&& discreteCF, const Number& prec1){
+    auto computeVaRNewtonHelper(const Number& alpha, const Number& xMin, const Number& xMax, const Number& guess, CFDiscrete&& discreteCF, const Number& prec1, const Number& prec2){
         return -newton::zeros([&](const auto& pointInX){
             return fangoost::computeConvolutionAtPoint(pointInX, xMin, xMax, discreteCF, [&](const auto& u, const auto& x, const auto& index){
                 return VkCDF(u, x, xMin, xMax, index);
             })-alpha;
-        }, guess, prec1, prec1, 500);
+        }, guess, prec1, prec2, 500);
     }
 
     template<typename Number, typename CF, typename Index>
     auto computeVaR(const Number& alpha, const Number& prec, const Number& xMin, const Number& xMax, const Index& numU, CF&& cf){
-        return computeVaRDiscrete(alpha, xMin, xMax, fangoost::halfFirstIndex(fangoost::computeDiscreteCFReal(xMin, xMax, numU, cf)), prec, prec);
+        return computeVaRHelper(alpha, xMin, xMax, fangoost::halfFirstIndex(fangoost::computeDiscreteCFReal(xMin, xMax, numU, cf)), prec, prec);
     }
     template<typename Number, typename CF, typename Index>
-    auto computeVaRNewton(const Number& alpha, const Number& prec, const Number& xMin, const Number& xMax, const Number& guess, const Index& numU, CF&& cf){
-        return computeVaRDiscreteNewton(alpha, xMin, xMax, guess, fangoost::halfFirstIndex(fangoost::computeDiscreteCFReal(xMin, xMax, numU, cf)), prec);
+    auto computeVaRNewton(const Number& alpha, const Number& prec1, const Number& prec2, const Number& xMin, const Number& xMax, const Number& guess, const Index& numU, CF&& cf){
+        return computeVaRNewtonHelper(alpha, xMin, xMax, guess, fangoost::halfFirstIndex(fangoost::computeDiscreteCFReal(xMin, xMax, numU, cf)), prec1, prec2);
+    }
+    template<typename Number, typename CFDiscrete, typename Index>
+    auto computeVaRNewtonDiscrete(const Number& alpha, const Number& prec1, const Number& prec2, const Number& xMin, const Number& xMax, const Number& guess, CFDiscrete&& cf){
+        return computeVaRNewtonHelper(alpha, xMin, xMax, guess, fangoost::halfFirstIndex(cf), prec1, prec2);
     }
 
     template<typename Number, typename CFDiscrete>
     auto computeVaRDiscrete(const Number& alpha, const Number& prec, const Number& xMin, const Number& xMax, CFDiscrete&& cf){
-        return computeVaRDiscrete(alpha, xMin, xMax, fangoost::halfFirstIndex(cf), prec, prec);
+        return computeVaRHelper(alpha, xMin, xMax, fangoost::halfFirstIndex(cf), prec, prec);
     }
 
     /**note that in actual implementation we probably want 
@@ -79,7 +83,7 @@ namespace cfdistutilities {
     auto computeES(const Number& alpha, const Number& prec, const Number& xMin, const Number& xMax, const Index& numU, CF&& cf){
         auto computeVaRAndES=[&](auto&& discreteCF){
             return fangoost::computeConvolutionAtPoint(
-                -computeVaRDiscrete(alpha, 
+                -computeVaRHelper(alpha, 
                     xMin, xMax, 
                     discreteCF, prec, prec
                 ),
@@ -100,7 +104,7 @@ namespace cfdistutilities {
     template<typename Number, typename CFDiscrete>
     auto computeESDiscrete(const Number& alpha, const Number& prec, const Number& xMin, const Number& xMax, CFDiscrete&& cf){
         return fangoost::computeConvolutionAtPoint(
-            -computeVaRDiscrete(alpha, prec,
+            -computeVaRHelper(alpha, prec,
                 xMin, xMax, 
                 cf
             ),

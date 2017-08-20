@@ -33,7 +33,7 @@ TEST_CASE("Test computeVaRNewton", "[CFDistUtilities]"){
     };      
     const auto qnormReference=6.224268;
     double prec=.0000001;
-    auto myqNorm=cfdistutilities::computeVaRNewton(alpha, prec, xMin, xMax, mu, numU, normCF);
+    auto myqNorm=cfdistutilities::computeVaRNewton(alpha, prec, prec, xMin, xMax, mu, numU, normCF);
     REQUIRE(myqNorm==Approx(qnormReference));
 } 
 /*

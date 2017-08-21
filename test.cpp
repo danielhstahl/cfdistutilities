@@ -5,7 +5,13 @@
 #include "CFDistUtilities.h"
 #include "FangOost.h"
 #include <complex>
-
+/**
+Compile your application with -g, then you'll have debug symbols in the binary file.
+Use gdb to open the gdb console.
+Use file and pass it your application's binary file in the console.
+Use run and pass in any arguments your application needs to start.
+Do something to cause a Segmentation Fault.
+Type bt in the gdb console to get a stack trace of the Segmentation Fault.*/
 TEST_CASE("Test computeVaR", "[CFDistUtilities]"){
     const double mu=2;
     const double sigma=5;
@@ -36,26 +42,9 @@ TEST_CASE("Test computeVaRNewton", "[CFDistUtilities]"){
     auto myqNorm=cfdistutilities::computeVaRNewton(alpha, prec, prec, xMin, xMax, mu, numU, normCF);
     REQUIRE(myqNorm==Approx(qnormReference));
 } 
-/*
-TEST_CASE("Test computeES", "[CFDistUtilities]"){
-    const double mu=2;
-    const double sigma=1;
-    const int numX=5;
-    const int numU=64;
-    const double xMin=-3;
-    const double xMax=7;
-    const double alpha=.05;
-    auto normCF=[&](const auto& u){ //normal distribution's CF
-        return exp(u*mu+.5*u*u*sigma*sigma);
-    };      
-    const auto reference=-0.06271281;
-    double prec=.00001;
-    auto myqNorm=cfdistutilities::computeES(.3551464, xMin, xMax, numU, normCF);
-    std::cout<<myqNorm<<std::endl;
-    for(int i=0; i<numX; ++i){
-        REQUIRE(myqNorm==Approx(reference));
-    }  
-} */
+
+
+
 TEST_CASE("Test computeESandVaR", "[CFDistUtilities]"){
     const double mu=2;
     const double sigma=5;

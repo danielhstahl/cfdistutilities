@@ -42,6 +42,53 @@ TEST_CASE("Test computeVaRNewton", "[CFDistUtilities]"){
     auto myqNorm=cfdistutilities::computeVaRNewton(alpha, prec, prec, xMin, xMax, mu, numU, normCF);
     REQUIRE(myqNorm==Approx(qnormReference));
 } 
+TEST_CASE("Test cdf", "[CFDistUtilities]"){
+    const double mu=2;
+    const double sigma=5;
+    const int numU=64;
+    const double xMin=-20;
+    const double xMax=25;
+    const double alpha=.05;
+    auto normCF=[&](const auto& u){ //normal distribution's CF
+        return exp(u*mu+.5*u*u*sigma*sigma);
+    };      
+    const auto pnormReference=.6554217; 
+    const int xDiscrete=46;
+    auto myPnorm=cfdistutilities::computeCDF(xDiscrete, numU, xMin, xMax, normCF);
+    REQUIRE(myPnorm[24]==Approx(pnormReference));
+} 
+TEST_CASE("Test cdf discrete", "[CFDistUtilities]"){
+    const double mu=2;
+    const double sigma=5;
+    const int numU=64;
+    const double xMin=-20;
+    const double xMax=25;
+    const double alpha=.05;
+    auto normCF=[&](const auto& u){ //normal distribution's CF
+        return exp(u*mu+.5*u*u*sigma*sigma);
+    };      
+    const auto pnormReference=.6554217; 
+    //corresponds with idndex 25
+    const int xDiscrete=46;
+    auto myPnorm=cfdistutilities::computeCDF(xDiscrete, xMin, xMax, fangoost::computeDiscreteCFReal(xMin, xMax, numU, normCF));
+    REQUIRE(myPnorm[24]==Approx(pnormReference));
+} 
+TEST_CASE("Test cdf point", "[CFDistUtilities]"){
+    const double mu=2;
+    const double sigma=5;
+    const int numU=64;
+    const double xMin=-20;
+    const double xMax=25;
+    const double alpha=.05;
+    auto normCF=[&](const auto& u){ //normal distribution's CF
+        return exp(u*mu+.5*u*u*sigma*sigma);
+    };      
+    const auto pnormReference=.6554217; 
+    //corresponds with idndex 25
+   
+    const auto actualResult=cfdistutilities::computeCDFAtPoint(4.0, numU, xMin, xMax, normCF);
+    REQUIRE(actualResult==Approx(pnormReference));
+} 
 
 
 

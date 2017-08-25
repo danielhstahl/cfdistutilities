@@ -52,14 +52,40 @@ namespace cfdistutilities {
         }, xMin, xMax, prec1, prec2);
     }
 
+    template<typename Number, typename CFDiscrete, typename Index>
+    auto computeCDF(const Index& numXDiscrete, const Number& xMin, const Number& xMax, CFDiscrete&& discreteCF){
+        return fangoost::computeExpectationDiscrete(numXDiscrete, xMin, xMax, discreteCF, [&](const auto& u, const auto& x, const auto& index){
+            return VkCDF(u, x, xMin, xMax, index);
+        });
+    }
+    template<typename Number, typename CF, typename Index>
+    auto computeCDF(const Index& numXDiscrete, const Index& numU, const Number& xMin, const Number& xMax, CF&& cf){
+        return fangoost::computeExpectation(numXDiscrete, numU, xMin, xMax, cf, [&](const auto& u, const auto& x, const auto& index){
+            return VkCDF(u, x, xMin, xMax, index);
+        });
+    }
+    template<typename Number, typename CFDiscrete>
+    auto computeCDFAtPoint(const Number& xValue, const Number& xMin, const Number&xMax, CFDiscrete&& cfDiscrete){
+        return fangoost::computeExpectationPointDiscrete(xValue, xMin, xMax, cfDiscrete, [&](const auto& u, const auto& x, const auto& index){
+            return VkCDF(u, x, xMin, xMax, index);
+        });
+    }
+    template<typename Number, typename CF, typename Index>
+    auto computeCDFAtPoint(const Number& xValue,const Index& numU, const Number& xMin, const Number&xMax, CF&& cf){
+        return fangoost::computeExpectationPoint(xValue, xMin, xMax, numU, cf, [&](const auto& u, const auto& x, const auto& index){
+            return VkCDF(u, x, xMin, xMax, index);
+        });
+    }
+
 
     template<typename Number, typename CFDiscrete>
     auto computeVaRNewtonHelper(const Number& alpha, const Number& xMin, const Number& xMax, const Number& guess, CFDiscrete&& discreteCF, const Number& prec1, const Number& prec2){
+        const Number logAlpha=log(alpha);
         return -newton::zeros([&](const auto& pointInX){
-            return fangoost::computeExpectationPointDiscrete(pointInX, xMin, xMax, discreteCF, [&](const auto& u, const auto& x, const auto& index){
+            return log(fangoost::computeExpectationPointDiscrete(pointInX, xMin, xMax, discreteCF, [&](const auto& u, const auto& x, const auto& index){
                 return VkCDF(u, x, xMin, xMax, index);
-            })-alpha;
-        }, guess, prec1, prec2, 500);
+            }))-logAlpha;
+        }, guess, prec1, prec2, 50);
     }
 
     template<typename Number, typename CF, typename Index>

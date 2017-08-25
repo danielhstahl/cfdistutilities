@@ -29,7 +29,7 @@ namespace cfdistutilities {
     auto diffPow(const X& x, const Number& a){
         return .5*(powTwo(x)-powTwo(a));
     }
-
+ 
     /**
         Function to compute the partial expectation of a distribution; see
         http://danielhstahl.com/static/media/CreditRiskExtensions.c31991d2.pdf.

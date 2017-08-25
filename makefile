@@ -6,10 +6,10 @@ ifeq ($(UNAME_S),Darwin)
 	GCCVAL=g++-7
 endif
 test:test.o 
-	$(GCCVAL) -std=c++14 -O3 $(STATIC) -g  test.o $(INCLUDES) -o test -fopenmp
+	$(GCCVAL) -std=c++14 -O3 -pthread --coverage $(STATIC) -g  test.o $(INCLUDES) -o test -fopenmp
 
 test.o: test.cpp CFDistUtilities.h 
-	$(GCCVAL) -std=c++14 -O3 $(STATIC) -D VERBOSE_FLAG=1 -g  -c test.cpp   $(INCLUDES) -fopenmp
+	$(GCCVAL) -std=c++14 -O3 -pthread --coverage $(STATIC) -D VERBOSE_FLAG=1  -g  -c test.cpp   $(INCLUDES) -fopenmp
 
 clean:
 	-rm *.o test *.out

@@ -5,3 +5,4 @@ build
 test
 build
 *.plist
+*.gcno

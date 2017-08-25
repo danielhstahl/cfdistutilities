@@ -13,7 +13,7 @@ Use run and pass in any arguments your application needs to start.
 Do something to cause a Segmentation Fault.
 Type bt in the gdb console to get a stack trace of the Segmentation Fault.*/
 TEST_CASE("Test computeVaR", "[CFDistUtilities]"){
-    const double mu=2;
+    const double mu=2; 
     const double sigma=5;
     const int numU=64;
     const double xMin=-20;

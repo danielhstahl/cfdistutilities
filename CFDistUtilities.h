@@ -80,11 +80,10 @@ namespace cfdistutilities {
 
     template<typename Number, typename CFDiscrete>
     auto computeVaRNewtonHelper(const Number& alpha, const Number& xMin, const Number& xMax, const Number& guess, CFDiscrete&& discreteCF, const Number& prec1, const Number& prec2){
-        const Number logAlpha=log(alpha);
         return -newton::zeros([&](const auto& pointInX){
-            return log(fangoost::computeExpectationPointDiscrete(pointInX, xMin, xMax, discreteCF, [&](const auto& u, const auto& x, const auto& index){
+            return fangoost::computeExpectationPointDiscrete(pointInX, xMin, xMax, discreteCF, [&](const auto& u, const auto& x, const auto& index){
                 return VkCDF(u, x, xMin, xMax, index);
-            }))-logAlpha;
+            })-alpha;
         }, guess, prec1, prec2, 50);
     }
 

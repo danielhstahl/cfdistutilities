@@ -107,32 +107,10 @@ namespace cfdistutilities {
         return computeVaRHelper(alpha, xMin, xMax, cf, prec, prec);
     }
 
-    /**note that in actual implementation we probably want 
-    to return both VaR and ES from one function since they
-    both get computed in this function*/
-    template<typename Number, typename CF, typename Index>
-    auto computeES(const Number& alpha, const Number& prec, const Number& xMin, const Number& xMax, const Index& numU, CF&& cf){
-        auto computeVaRAndES=[&](auto&& discreteCF){
-            return fangoost::computeExpectationPointDiscrete(
-                -computeVaRHelper(alpha, 
-                    xMin, xMax, 
-                    discreteCF, prec, prec
-                ),
-                xMin, 
-                xMax,
-                discreteCF, 
-                [&](const auto& u, const auto& x, const auto& index){
-                    return VkE(u, x, xMin, xMax, index);
-                }
-            );
-        };
-        return -computeVaRAndES(
-                fangoost::computeDiscreteCFReal(xMin, xMax, numU, cf)
-        )/alpha;
-    }
+
     template<typename Number, typename CFDiscrete>
     auto computeESDiscrete(const Number& alpha, const Number& prec, const Number& xMin, const Number& xMax, CFDiscrete&& cf){
-        return fangoost::computeExpectationPointDiscrete(
+        return -fangoost::computeExpectationPointDiscrete(
             -computeVaRDiscrete(alpha, prec,
                 xMin, xMax, 
                 cf
@@ -145,9 +123,25 @@ namespace cfdistutilities {
             }
         )/alpha;
     }
+    /**note that in actual implementation we probably want 
+    to return both VaR and ES from one function since they
+    both get computed in this function*/
     template<typename Number, typename CF, typename Index>
-    auto computeEL(const Number& alpha, const Number& prec, const Number& xMin, const Number& xMax, const Index& numU, CF&& cf){
+    auto computeES(const Number& alpha, const Number& prec, const Number& xMin, const Number& xMax, const Index& numU, CF&& cf){
+        return computeESDiscrete(alpha, prec, xMin, xMax, 
+            fangoost::computeDiscreteCFReal(xMin, xMax, numU, cf)
+        );
+    }
+    
+    template<typename Number, typename CF, typename Index>
+    auto computeEL(const Number& xMin, const Number& xMax, const Index& numU, CF&& cf){
         return fangoost::computeExpectationPoint(xMax, xMin, xMax, numU, cf, [&](const auto& u, const auto& x, const auto& index){
+            return VkE(u, x, xMin, xMax, index);
+        });
+    }
+    template<typename Number, typename CFDiscrete>
+    auto computeELDiscrete(const Number& xMin, const Number& xMax, CFDiscrete&& cf){
+        return fangoost::computeExpectationPointDiscrete(xMax, xMin, xMax, cf, [&](const auto& u, const auto& x, const auto& index){
             return VkE(u, x, xMin, xMax, index);
         });
     }

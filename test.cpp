@@ -118,8 +118,6 @@ TEST_CASE("Test computeEL", "[CFDistUtilities]"){
     auto normCF=[&](const auto& u){ //normal distribution's CF
         return exp(u*mu+.5*u*u*sigma*sigma);
     };      
-    //const auto reference=-0.06271281;
-    double prec=.0000000001;
-    auto myqNorm=cfdistutilities::computeEL(alpha, prec, xMin, xMax, numU, normCF);
+    auto myqNorm=cfdistutilities::computeEL( xMin, xMax, numU, normCF);
     REQUIRE(myqNorm==Approx(mu)); 
 } 

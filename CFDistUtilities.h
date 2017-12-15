@@ -123,6 +123,18 @@ namespace cfdistutilities {
             }
         )/alpha;
     }
+    template<typename Number, typename CFDiscrete>
+    auto computeESDiscrete(const Number& alpha, const Number& xMin, const Number& xMax, const Number& VaR, CFDiscrete&& cf, bool includeVaR){
+        return -fangoost::computeExpectationPointDiscrete(
+            -VaR,
+            xMin, 
+            xMax,
+            cf, 
+            [&](const auto& u, const auto& x, const auto& index){
+                return VkE(u, x, xMin, xMax, index);
+            }
+        )/alpha;
+    }
     /**note that in actual implementation we probably want 
     to return both VaR and ES from one function since they
     both get computed in this function*/
@@ -130,6 +142,13 @@ namespace cfdistutilities {
     auto computeES(const Number& alpha, const Number& prec, const Number& xMin, const Number& xMax, const Index& numU, CF&& cf){
         return computeESDiscrete(alpha, prec, xMin, xMax, 
             fangoost::computeDiscreteCFReal(xMin, xMax, numU, cf)
+        );
+    }
+    template<typename Number, typename CF, typename Index>
+    auto computeES(const Number& alpha, const Number& xMin, const Number& xMax, const Number& VaR, const Index& numU, CF&& cf, bool includeVaR){
+        return computeESDiscrete(alpha, xMin, xMax, VaR,
+            fangoost::computeDiscreteCFReal(xMin, xMax, numU, cf),
+            includeVaR
         );
     }
     

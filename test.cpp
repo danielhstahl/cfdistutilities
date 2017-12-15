@@ -108,6 +108,24 @@ TEST_CASE("Test computeESandVaR", "[CFDistUtilities]"){
     auto myqNorm=cfdistutilities::computeES(alpha, prec, xMin, xMax, numU, normCF);
     REQUIRE(myqNorm==Approx(reference).epsilon(.0001)); 
 } 
+TEST_CASE("Test computeESandVaRSeperate", "[CFDistUtilities]"){
+    const double mu=2;
+    const double sigma=5;
+    const int numU=64;
+    const double xMin=-20;
+    const double xMax=25;
+    const double alpha=.05;
+    auto normCF=[&](const auto& u){ //normal distribution's CF
+        return exp(u*mu+.5*u*u*sigma*sigma);
+    };      
+    //const auto reference=-0.06271281;
+    const auto reference=8.313564;
+    double prec=.0000000001;
+    auto computeVar=cfdistutilities::computeVaR(alpha, prec, xMin, xMax, numU, normCF);
+    auto myqNorm=cfdistutilities::computeES(alpha,  xMin, xMax,computeVar, numU, normCF, true);
+    REQUIRE(myqNorm==Approx(reference).epsilon(.0001)); 
+} 
+
 TEST_CASE("Test computeEL", "[CFDistUtilities]"){
     const double mu=2;
     const double sigma=5;

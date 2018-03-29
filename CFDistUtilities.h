@@ -110,7 +110,9 @@ namespace cfdistutilities {
 
     constexpr int ES=0;
     constexpr int VAR=1;
-    
+    /**
+     * returns tuple of ES and VaR
+     */
     template<typename Number,typename CFDiscrete>
     auto computeESDiscrete(const Number& alpha, const Number& prec, const Number& xMin, const Number& xMax, CFDiscrete&& cf){
         const auto VaR=computeVaRDiscrete(alpha, prec,
@@ -128,7 +130,9 @@ namespace cfdistutilities {
             }
         )/alpha, VaR);
     }
-
+    /**
+     * returns tuple of ES and VaR
+     */
     template<typename Number, typename CF, typename Index>
     auto computeES(const Number& alpha, const Number& prec, const Number& xMin, const Number& xMax, const Index& numU, CF&& cf){
         return computeESDiscrete(alpha, prec, xMin, xMax, 

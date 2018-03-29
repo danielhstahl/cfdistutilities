@@ -108,7 +108,8 @@ namespace cfdistutilities {
         return computeVaRHelper(alpha, xMin, xMax, std::move(cf), prec, prec);
     }
 
-
+    constexpr int ES=0;
+    constexpr int VAR=1;
     
     template<typename Number,typename CFDiscrete>
     auto computeESDiscrete(const Number& alpha, const Number& prec, const Number& xMin, const Number& xMax, CFDiscrete&& cf){
@@ -127,19 +128,7 @@ namespace cfdistutilities {
             }
         )/alpha, VaR);
     }
-/*
-    template<typename Number, typename CFDiscrete>
-    auto computeESDiscrete(const Number& alpha, const Number& prec, const Number& xMin, const Number& xMax, CFDiscrete&& cf){
-        return computeESDiscrete(
-            alpha, xMin, xMax, 
-            -computeVaRDiscrete(alpha, prec,
-                xMin, xMax, 
-                cf
-            ),
-            std::move(cf)
-        );
-    }
-*/
+
     /**note that in actual implementation we probably want 
     to return both VaR and ES from one function since they
     both get computed in this function*/
@@ -149,13 +138,6 @@ namespace cfdistutilities {
             fangoost::computeDiscreteCFReal(xMin, xMax, numU, std::move(cf))
         );
     }
-    /*template<typename Number, typename CF, typename Index>
-    auto computeES(const Number& alpha, const Number& xMin, const Number& xMax, const Number& VaR, const Index& numU, CF&& cf, bool includeVaR){
-        return computeESDiscrete(alpha, xMin, xMax, VaR,
-            fangoost::computeDiscreteCFReal(xMin, xMax, numU, std::move(cf)),
-            includeVaR
-        );
-    }*/
     
     template<typename Number, typename CF, typename Index>
     auto computeEL(const Number& xMin, const Number& xMax, const Index& numU, CF&& cf){

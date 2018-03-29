@@ -105,7 +105,7 @@ TEST_CASE("Test computeESandVaR", "[CFDistUtilities]"){
     //const auto reference=-0.06271281;
     const auto reference=8.313564;
     double prec=.0000000001;
-    auto myqNorm=std::get<0>(cfdistutilities::computeES(alpha, prec, xMin, xMax, numU, normCF));
+    auto myqNorm=std::get<cfdistutilities::ES>(cfdistutilities::computeES(alpha, prec, xMin, xMax, numU, normCF));
     REQUIRE(myqNorm==Approx(reference).epsilon(.0001)); 
 } 
 /*

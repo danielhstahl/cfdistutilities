@@ -7,3 +7,4 @@ build
 *.plist
 *.gcno
 *.gcda
+.DS_Store

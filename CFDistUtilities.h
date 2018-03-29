@@ -8,6 +8,7 @@
 #include "FunctionalUtilities.h"
 #include "FangOost.h"
 #include "Newton.h"
+#include <tuple>
 
 namespace cfdistutilities {
     /**
@@ -108,24 +109,15 @@ namespace cfdistutilities {
     }
 
 
-    template<typename Number, typename CFDiscrete>
+    
+    template<typename Number,typename CFDiscrete>
     auto computeESDiscrete(const Number& alpha, const Number& prec, const Number& xMin, const Number& xMax, CFDiscrete&& cf){
-        return -fangoost::computeExpectationPointDiscrete(
-            -computeVaRDiscrete(alpha, prec,
-                xMin, xMax, 
-                cf
-            ),
-            xMin, 
-            xMax,
-            std::move(cf), 
-            [&](const auto& u, const auto& x, const auto& index){
-                return VkE(u, x, xMin, xMax, index);
-            }
-        )/alpha;
-    }
-    template<typename Number, typename CFDiscrete>
-    auto computeESDiscrete(const Number& alpha, const Number& xMin, const Number& xMax, const Number& VaR, CFDiscrete&& cf, bool includeVaR){
-        return -fangoost::computeExpectationPointDiscrete(
+        const auto VaR=computeVaRDiscrete(alpha, prec,
+            xMin, xMax, 
+            cf
+        );
+        return std::make_tuple(
+            -fangoost::computeExpectationPointDiscrete(
             -VaR,
             xMin, 
             xMax,
@@ -133,8 +125,21 @@ namespace cfdistutilities {
             [&](const auto& u, const auto& x, const auto& index){
                 return VkE(u, x, xMin, xMax, index);
             }
-        )/alpha;
+        )/alpha, VaR);
     }
+/*
+    template<typename Number, typename CFDiscrete>
+    auto computeESDiscrete(const Number& alpha, const Number& prec, const Number& xMin, const Number& xMax, CFDiscrete&& cf){
+        return computeESDiscrete(
+            alpha, xMin, xMax, 
+            -computeVaRDiscrete(alpha, prec,
+                xMin, xMax, 
+                cf
+            ),
+            std::move(cf)
+        );
+    }
+*/
     /**note that in actual implementation we probably want 
     to return both VaR and ES from one function since they
     both get computed in this function*/
@@ -144,13 +149,13 @@ namespace cfdistutilities {
             fangoost::computeDiscreteCFReal(xMin, xMax, numU, std::move(cf))
         );
     }
-    template<typename Number, typename CF, typename Index>
+    /*template<typename Number, typename CF, typename Index>
     auto computeES(const Number& alpha, const Number& xMin, const Number& xMax, const Number& VaR, const Index& numU, CF&& cf, bool includeVaR){
         return computeESDiscrete(alpha, xMin, xMax, VaR,
             fangoost::computeDiscreteCFReal(xMin, xMax, numU, std::move(cf)),
             includeVaR
         );
-    }
+    }*/
     
     template<typename Number, typename CF, typename Index>
     auto computeEL(const Number& xMin, const Number& xMax, const Index& numU, CF&& cf){

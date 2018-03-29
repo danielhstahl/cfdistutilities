@@ -129,9 +129,6 @@ namespace cfdistutilities {
         )/alpha, VaR);
     }
 
-    /**note that in actual implementation we probably want 
-    to return both VaR and ES from one function since they
-    both get computed in this function*/
     template<typename Number, typename CF, typename Index>
     auto computeES(const Number& alpha, const Number& prec, const Number& xMin, const Number& xMax, const Index& numU, CF&& cf){
         return computeESDiscrete(alpha, prec, xMin, xMax, 

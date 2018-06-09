@@ -1,4 +1,4 @@
-INCLUDES= -I../FangOost -I../FunctionalUtilities -I../GaussNewton -I../TupleUtilities -I../AutoDiff
+INCLUDES= -I../FangOost -I../FunctionalUtilities -I../GaussNewton -I../TupleUtilities -I../AutoDiff -I../CharacteristicFunctions -I../RungeKutta
 GCCVAL=g++
 
 UNAME_S := $(shell uname -s)

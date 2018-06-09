@@ -92,7 +92,7 @@ namespace cfdistutilities {
     auto computeVaR(const Number& alpha, const Number& prec, const Number& xMin, const Number& xMax, const Index& numU, CF&& cf){
         return computeVaRHelper(alpha, xMin, xMax, fangoost::computeDiscreteCFReal(xMin, xMax, numU, std::move(cf)), prec, prec);
     }
-
+    /**Newton is faster but not as stable*/
     template<typename Number, typename CF, typename Index>
     auto computeVaRNewton(const Number& alpha, const Number& prec1, const Number& prec2, const Number& xMin, const Number& xMax, const Number& guess, const Index& numU, CF&& cf){
         return computeVaRNewtonHelper(alpha, xMin, xMax, guess, fangoost::computeDiscreteCFReal(xMin, xMax, numU, std::move(cf)), prec1, prec2);
